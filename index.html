@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Password Generator — Secure, Fast, Free</title>
+    <meta name="description" content="Free password generator with adjustable length, symbols, numbers, and uppercase options. Copy with one click. Works on all devices." />
+    <meta name="theme-color" content="#6b21a8" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- OG -->
+    <meta property="og:title" content="Password Generator — Secure, Fast, Free" />
+    <meta property="og:description" content="Create a strong password in seconds. Free and secure." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yourusername.github.io/password-generator/" />
+    <meta property="og:image" content="https://yourusername.github.io/password-generator/og-image.jpg" />
+
+    <!-- Tailwind + Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/reset.css">
+    <link rel="stylesheet" href="assets/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    animation: { 'pulse-fast': 'pulse 1.5s infinite' },
+                },
+            },
+        };
+    </script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white flex flex-col items-center p-4 overflow-y-auto">
+<main class="w-full max-w-md md:max-w-xl lg:max-w-2xl transition-transform duration-500">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent select-none">
+            🔒 <span data-i18n="title">Password Generator</span>
+        </h1>
+        <button id="themeToggle" class="theme-btn" title="Toggle theme">🌙</button>
+    </div>
+
+    <p class="text-gray-400 text-center mb-6" data-i18n="subtitle">Create a strong password in seconds</p>
+
+    <!-- Language Switch -->
+    <div class="flex justify-center gap-2 mb-6">
+        <button id="lang-en" class="lang-btn active">EN</button>
+        <button id="lang-ru" class="lang-btn">RU</button>
+    </div>
+
+    <!-- Card -->
+    <section class="glass rounded-2xl border border-white/20 p-6 md:p-8 shadow-2xl backdrop-blur-xl">
+        <!-- Password -->
+        <div class="mb-6">
+            <div id="passwordOutput" class="bg-gray-800/50 border border-gray-700 rounded-xl p-4 font-mono text-lg text-center min-h-[3rem] flex items-center justify-center overflow-x-auto whitespace-nowrap">
+                <span data-i18n="prompt">Click “Generate”</span>
+            </div>
+
+            <div class="flex gap-2 mt-3">
+                <button id="copyBtn" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" data-i18n="copy">Copy</button>
+                <button id="exportBtn" class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" data-i18n="export">Export TXT</button>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="space-y-5">
+            <div>
+                <label class="flex justify-between text-sm font-medium text-gray-300">
+                    <span data-i18n="length">Password length</span>
+                    <span id="lengthValue" class="text-purple-400 font-bold">16</span>
+                </label>
+                <input type="range" id="length" min="6" max="50" value="16" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer mt-2 accent-purple-500">
+            </div>
+
+            <div class="space-y-3">
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-gray-300" data-i18n="upper">Uppercase letters (A–Z)</span>
+                    <input type="checkbox" id="uppercase" checked class="w-5 h-5 text-purple-600 rounded">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-gray-300" data-i18n="lower">Lowercase letters (a–z)</span>
+                    <input type="checkbox" id="lowercase" checked class="w-5 h-5 text-purple-600 rounded">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-gray-300" data-i18n="nums">Numbers (0–9)</span>
+                    <input type="checkbox" id="numbers" checked class="w-5 h-5 text-purple-600 rounded">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-gray-300" data-i18n="syms">Symbols (!@#$)</span>
+                    <input type="checkbox" id="symbols" checked class="w-5 h-5 text-purple-600 rounded">
+                </label>
+            </div>
+
+            <button id="generateBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg" data-i18n="generate">
+                Generate Password
+            </button>
+        </div>
+
+        <!-- Strength -->
+        <div id="strengthIndicator" class="mt-4 h-2 bg-gray-700 rounded-full overflow-hidden">
+            <div id="strengthBar" class="h-full w-0 transition-all duration-500"></div>
+        </div>
+        <p id="strengthText" class="text-center text-xs text-gray-400 mt-2" data-i18n="strength">Password Strength: —</p>
+    </section>
+
+
+    <footer class="glass rounded-2xl border border-white/20 p-6 md:p-8 shadow-2xl backdrop-blur-xl  ">
+        <div class="max-w-3xl mx-auto px-4 py-6 text-center">
+            <p class="text-center text-gray-500 text-sm ">
+                <span data-i18n="footer">Made with ❤️ using</span> <a href="https://vproger.ru/" class="underline hover:text-purple-400">VProger</a>
+            </p>
+
+            <p class="text-sm text-gray-400">
+                © 2025 <span class="text-white font-medium">Андрей Викулов</span> ·
+                <a href="https://viku-lov.ru" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors duration-200">
+                    viku-lov.ru
+                </a>
+            </p>
+        </div>
+    </footer>
+</main>
+
+<script>
+    const els = {
+        passwordOutput: document.getElementById('passwordOutput'),
+        copyBtn: document.getElementById('copyBtn'),
+        exportBtn: document.getElementById('exportBtn'),
+        generateBtn: document.getElementById('generateBtn'),
+        lengthInput: document.getElementById('length'),
+        lengthValue: document.getElementById('lengthValue'),
+        uppercase: document.getElementById('uppercase'),
+        lowercase: document.getElementById('lowercase'),
+        numbers: document.getElementById('numbers'),
+        symbols: document.getElementById('symbols'),
+        strengthBar: document.getElementById('strengthBar'),
+        strengthText: document.getElementById('strengthText'),
+        themeToggle: document.getElementById('themeToggle')
+    };
+
+    // === Theme ===
+    if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+    const setTheme = (theme) => {
+        document.body.classList.toggle('light', theme === 'light');
+        localStorage.setItem('theme', theme);
+        els.themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        document.body.style.background = theme === 'light'
+            ? 'linear-gradient(to bottom right, #f9fafb, #dbeafe)'
+            : 'linear-gradient(to bottom right, #111827, #3b0764)';
+        document.body.style.color = theme === 'light' ? '#111' : '#fff';
+    };
+    els.themeToggle.addEventListener('click', () => {
+        const theme = document.body.classList.contains('light') ? 'dark' : 'light';
+        setTheme(theme);
+    });
+    setTheme(localStorage.getItem('theme') || 'dark');
+
+
+    const langBtns = {
+        en: document.getElementById('lang-en'),
+        ru: document.getElementById('lang-ru')
+    };
+
+    const translations = {
+        en: {
+            title: "Password Generator",
+            subtitle: "Create a strong password in seconds",
+            prompt: "Click “Generate”",
+            copy: "Copy",
+            export: "Export TXT",
+            length: "Password length",
+            upper: "Uppercase letters (A–Z)",
+            lower: "Lowercase letters (a–z)",
+            nums: "Numbers (0–9)",
+            syms: "Symbols (!@#$)",
+            generate: "Generate Password",
+            strength: "Password Strength: —",
+            footer: "Made with ❤️ using"
+        },
+        ru: {
+            title: "Генератор Паролей",
+            subtitle: "Создай надёжный пароль за секунду",
+            prompt: "Нажми «Сгенерировать»",
+            copy: "Копировать",
+            export: "Экспорт TXT",
+            length: "Длина пароля",
+            upper: "Заглавные буквы (A–Z)",
+            lower: "Строчные буквы (a–z)",
+            nums: "Цифры (0–9)",
+            syms: "Символы (!@#$)",
+            generate: "Сгенерировать пароль",
+            strength: "Сила пароля: —",
+            footer: "Создано с ❤️ на"
+        }
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('lang', lang);
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.textContent = translations[lang][key] || el.textContent;
+        });
+        langBtns.en.classList.toggle('active', lang === 'en');
+        langBtns.ru.classList.toggle('active', lang === 'ru');
+    }
+
+    langBtns.en.addEventListener('click', () => setLanguage('en'));
+    langBtns.ru.addEventListener('click', () => setLanguage('ru'));
+
+    function generatePassword() {
+        const length = +els.lengthInput.value;
+        const charset = {
+            upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lower: 'abcdefghijklmnopqrstuvwxyz',
+            nums: '0123456789',
+            syms: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+        let chars = '';
+        if (els.uppercase.checked) chars += charset.upper;
+        if (els.lowercase.checked) chars += charset.lower;
+        if (els.numbers.checked) chars += charset.nums;
+        if (els.symbols.checked) chars += charset.syms;
+        if (!chars) {
+            els.passwordOutput.textContent = currentLang === 'ru' ? 'Выбери хотя бы один тип!' : 'Select at least one type!';
+            return;
+        }
+        const password = Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+        els.passwordOutput.textContent = password;
+        evaluateStrength(password);
+    }
+
+    function evaluateStrength(pass) {
+        let score = 0;
+        if (pass.length >= 12) score += 2;
+        if (/[A-Z]/.test(pass)) score++;
+        if (/[a-z]/.test(pass)) score++;
+        if (/\d/.test(pass)) score++;
+        if (/[^A-Za-z0-9]/.test(pass)) score++;
+        const levels = [
+            { color: 'bg-red-500', text: currentLang === 'ru' ? 'Слабый' : 'Weak' },
+            { color: 'bg-yellow-500', text: currentLang === 'ru' ? 'Средний' : 'Medium' },
+            { color: 'bg-green-500', text: currentLang === 'ru' ? 'Сильный' : 'Strong' }
+        ];
+        const level = score <= 2 ? 0 : score <= 4 ? 1 : 2;
+        els.strengthBar.style.width = `${(score / 6) * 100}%`;
+        els.strengthBar.className = `h-full transition-all duration-500 ${levels[level].color}`;
+        els.strengthText.textContent = `${translations[currentLang].strength.split(':')[0]}: ${levels[level].text}`;
+    }
+
+    els.copyBtn.addEventListener('click', () => {
+        const text = els.passwordOutput.textContent;
+        if (!text || text.includes('Click') || text.includes('Нажми')) return;
+        navigator.clipboard.writeText(text).then(() => {
+            els.copyBtn.textContent = currentLang === 'ru' ? 'Скопировано!' : 'Copied!';
+            setTimeout(() => setLanguage(currentLang), 1500);
+        });
+    });
+
+    els.exportBtn.addEventListener('click', () => {
+        const pass = els.passwordOutput.textContent;
+        if (!pass) return;
+        const blob = new Blob([`Password: ${pass}`], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `password_${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+    });
+
+    els.generateBtn.addEventListener('click', generatePassword);
+    els.lengthInput.addEventListener('input', () => {
+        els.lengthValue.textContent = els.lengthInput.value;
+        generatePassword();
+    });
+    ['uppercase', 'lowercase', 'numbers', 'symbols'].forEach(id => {
+        els[id].addEventListener('change', generatePassword);
+    });
+
+    window.addEventListener('load', () => {
+        setLanguage(currentLang);
+        generatePassword();
+    });
+</script>
+</body>
+</html>

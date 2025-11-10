@@ -1,0 +1,91 @@
+body {
+    transition: background .4s, color .4s;
+}
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+.lang-btn {
+    padding: .4rem 1rem;
+    border-radius: .6rem;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #bbb;
+    transition: all .3s;
+}
+.lang-btn.active {
+    background: rgba(167, 139, 250, 0.3);
+    border-color: #a78bfa;
+    color: #fff;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: .9rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: .4rem .7rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all .3s;
+}
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.15);
+}
+footer {
+    background: rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+    color: #aaa;
+    font-size: .9rem;
+}
+footer a {
+    color: #a78bfa;
+    transition: color .3s;
+}
+footer a:hover {
+    color: #d8b4fe;
+}
+.gradient-text {
+    background: linear-gradient(to right, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+@media (max-width: 640px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        text-align: center;
+    }
+
+    header h1 {
+        font-size: 1.4rem;
+        line-height: 1.2;
+    }
+
+    header i {
+        font-size: 1.3rem;
+    }
+
+    main {
+        margin-top: 0.5rem;
+    }
+
+    .theme-toggle {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .glass {
+        padding: 1.2rem;
+    }
+}
+
